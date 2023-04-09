@@ -1,0 +1,29 @@
+opam-version: "2.0"
+maintainer: "burbokop@gmail.com"
+authors: ["Borys Boiko"]
+
+homepage: "https://github.com/burbokop/derivative_parsing"
+bug-reports: "https://github.com/burbokop/derivative_parsing/issues"
+dev-repo: "git+https://github.com/burbokop/derivative_parsing.git"
+version: "dev"
+
+license: "https://spdx.org/licenses/MIT"
+
+synopsis: "_Catchy headline_"
+
+description: """
+Test derivative regular & contex-free-grammar parser
+"""
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+
+run-test: ["dune" "runtest" "-p" name]
+
+depends: [
+  "dune"
+  "ocamlformat" { >= "0.17.0" }
+  "alcotest" {with-test}
+]

@@ -1,0 +1,10 @@
+(executables
+ (names test)
+ (modes exe)
+ (libraries alcotest derivative-parsing.lib))
+
+(rule
+ (alias runtest)
+ (package derivative-parsing)
+ (action
+  (run %{dep:test.exe})))

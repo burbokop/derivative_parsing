@@ -1,0 +1,5 @@
+(library
+ (name derivative_parsing_lib)
+ (public_name derivative-parsing.lib)
+ (libraries unix str)
+ (synopsis "Lib with some tools for parsing"))

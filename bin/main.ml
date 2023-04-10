@@ -26,7 +26,7 @@ let fact_ymem_res = (YMem.y fact) 5
 let fact_fix_res = (Yfix.y fact_with_fix_point 0) 5
 
 let language = (
-  add "L" (Or(Seq(Ref("L"), Char('x')), Eps)) 
+  add "L" (lazy (Or(lazy (Seq(lazy (Ref("L")), lazy (Char('x')))), lazy Eps)))
   empty)
 
 let delta = (Yfix.y (is_nullable language) false)
@@ -45,6 +45,19 @@ let _ = Printf.printf "+++++\n%!"
 let _ = Printf.printf "=====:%d\n%!" (Lazy.force s)
 
 
+let derivative_x1 = YMem.y (derivative delta language 'x')
+let derivative_x_L1 = derivative_x1 (find "L" language)
+
+let _ = print_endline (Format.asprintf "L1:%a -S> %a" Derivative.rule_ppl (find "L" language) Derivative.rule_ppl (simplify (find "L" language)))
+
+let sd = simplify derivative_x_L1
+
+let _ = print_endline "after simplify"
+
+let _ = print_endline (Format.asprintf "derivative_x_L1:%a -S> %a" Derivative.rule_ppl derivative_x_L1 Derivative.rule_ppl sd)
+
+
+
 let l2 = (
   add "L" (
     (seq_of_string "foo") <||> 
@@ -52,11 +65,11 @@ let l2 = (
     (seq_of_string "qaq"))
   empty)
 
-let delta_l2: (rule -> bool) = (Yfix.y (is_nullable l2) false)
+let delta_l2: (lrule -> bool) = (Yfix.y (is_nullable l2) false)
 
-let derivative_x = YY.y (derivative delta_l2 l2 'f')
-let derivative_x_L = derivative_x (find "L" l2)
+let derivative_f = YY.y (derivative delta_l2 l2 'f')
+let derivative_f_L = derivative_f (find "L" l2)
 
-let _ = print_endline (Format.asprintf "L:%a -S> %a" Derivative.rule_pp (find "L" l2) Derivative.rule_pp (simplify (find "L" l2)))
+let _ = print_endline (Format.asprintf "L:%a -S> %a" Derivative.rule_ppl (find "L" l2) Derivative.rule_ppl (simplify (find "L" l2)))
 
-let _ = print_endline (Format.asprintf "derivative_x_L:%a -S> %a" Derivative.rule_pp derivative_x_L Derivative.rule_pp (simplify derivative_x_L))
+let _ = print_endline (Format.asprintf "derivative_x_L:%a -S> %a" Derivative.rule_ppl derivative_f_L Derivative.rule_ppl (simplify derivative_f_L))

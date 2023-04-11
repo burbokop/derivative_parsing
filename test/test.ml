@@ -42,6 +42,20 @@ let test_regular_derivative_memoized () =
         simplify derivative_f_L)
 
 
+let regular1 = (add "L" (
+    (seq_of_string "foo") <||>
+    (seq_of_string "fqq") <||>
+    (seq_of_string "qaq"))
+empty)
+
+let test_regular_match_foo () = Alcotest.(check (bool)) "match regular expr (foo)" true (Parse.match_str regular1 "L" "foo")
+let test_regular_match_fqq () = Alcotest.(check (bool)) "match regular expr (fqq)" true (Parse.match_str regular1 "L" "fqq")
+let test_regular_match_qaq () = Alcotest.(check (bool)) "match regular expr (qaq)" true (Parse.match_str regular1 "L" "qaq")
+let test_regular_match_ffo () = Alcotest.(check (bool)) "match regular expr (ffo)" false (Parse.match_str regular1 "L" "ffo")
+let test_regular_match_fooo () = Alcotest.(check (bool)) "match regular expr (fooo)" false (Parse.match_str regular1 "L" "fooo")
+let test_regular_match_fo () = Alcotest.(check (bool)) "match regular expr (fo)" false (Parse.match_str regular1 "L" "fo")
+
+
 (* Run it *)
 let () =
     Alcotest.run "Derivative" [
@@ -53,6 +67,15 @@ let () =
             [
                 Alcotest.test_case "Regular" `Quick test_regular_derivative;
                 Alcotest.test_case "Regular (Memoized)" `Quick test_regular_derivative_memoized;                
+            ]);
+        ("parse-regular-case",
+            [
+                Alcotest.test_case "foo" `Quick test_regular_match_foo;
+                Alcotest.test_case "fqq" `Quick test_regular_match_fqq;
+                Alcotest.test_case "qaq" `Quick test_regular_match_qaq;
+                Alcotest.test_case "ffo (should not match)" `Quick test_regular_match_ffo;
+                Alcotest.test_case "fooo (should not match)" `Quick test_regular_match_fooo;
+                Alcotest.test_case "fo (should not match)" `Quick test_regular_match_fo;
             ]);
     ]
 
